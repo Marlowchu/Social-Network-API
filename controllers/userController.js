@@ -1,21 +1,21 @@
 const { User, Thought } = require('../models');
 
-// Aggregate function to get the number of students overall
-const headCount = async () =>
-  Student.aggregate()
-    .count('studentCount')
-    .then((numberOfStudents) => numberOfStudents);
+// // Aggregate function to get the number of students overall
+// const headCount = async () =>
+//   Student.aggregate()
+//     .count('studentCount')
+//     .then((numberOfStudents) => numberOfStudents);
 
-// Aggregate function for getting the overall grade using $avg
-const grade = async (studentId) =>
-  Student.aggregate([
-    {
-      $unwind: '$assignments',
-    },
-    {
-      $group: { _id: studentId, overallGrade: { $avg: '$assignments.score' } },
-    },
-  ]);
+// // Aggregate function for getting the overall grade using $avg
+// const grade = async (studentId) =>
+//   Student.aggregate([
+//     {
+//       $unwind: '$assignments',
+//     },
+//     {
+//       $group: { _id: studentId, overallGrade: { $avg: '$assignments.score' } },
+//     },
+//   ]);
 
 module.exports = {
   // Get all Users
@@ -24,7 +24,7 @@ module.exports = {
       .then(async (users) => {
         const userObj = {
           users,
-          headCount: await headCount(),
+          // headCount: await headCount(),
         };
         return res.json(userObj);
       })
@@ -42,7 +42,7 @@ module.exports = {
           ? res.status(404).json({ message: 'No User with that ID' })
           : res.json({
               user,
-              grade: await grade(req.params.userId),
+              // grade: await grade(req.params.userId),
             })
       )
       .catch((err) => {
@@ -56,6 +56,23 @@ module.exports = {
       .then((user) => res.json(user))
       .catch((err) => res.status(500).json(err));
   },
+
+ // Update a user
+ updateUser(req, res) {
+  User.findOneAndUpdate(
+    { _id: req.params.userId },
+    { $set: req.body },
+    { runValidators: true, new: true }
+  )
+    .then((user) =>
+      !user
+        ? res.status(404).json({ message: 'No user with this id!' })
+        : res.json(user)
+    )
+    .catch((err) => res.status(500).json(err));
+},
+
+
   // Delete a user and remove them from the course
   deleteUser(req, res) {
     User.findOneAndRemove({ _id: req.params.userId })
@@ -78,51 +95,40 @@ module.exports = {
       .catch((err) => {
         console.log(err);
         res.status(500).json(err);
-      });
+      });  
   },
 
-
-
-
-
-
-
-
-
-
-
-  
-  // Add an assignment to a student
-  addAssignment(req, res) {
-    console.log('You are adding an assignment');
+  // Add a friend to a user
+  addFriend(req, res) {
+    console.log('You are adding a friend');
     console.log(req.body);
-    Student.findOneAndUpdate(
-      { _id: req.params.studentId },
-      { $addToSet: { assignments: req.body } },
+    User.findOneAndUpdate(
+      { _id: req.params.userId },
+      { $addToSet: { friends: req.body } },
       { runValidators: true, new: true }
     )
-      .then((student) =>
-        !student
+      .then((user) =>
+        !user
           ? res
               .status(404)
-              .json({ message: 'No student found with that ID :(' })
-          : res.json(student)
+              .json({ message: 'No user found with that ID :(' })
+          : res.json(user)
       )
       .catch((err) => res.status(500).json(err));
   },
-  // Remove assignment from a student
-  removeAssignment(req, res) {
-    Student.findOneAndUpdate(
-      { _id: req.params.studentId },
-      { $pull: { assignment: { assignmentId: req.params.assignmentId } } },
+  // Remove friend from a user
+  removeFriend(req, res) {
+    User.findOneAndUpdate(
+      { _id: req.params.userId },
+      { $pull: { friends: { friendId: req.params.friendId } } },
       { runValidators: true, new: true }
     )
-      .then((student) =>
-        !student
+      .then((user) =>
+        !user
           ? res
               .status(404)
-              .json({ message: 'No student found with that ID :(' })
-          : res.json(student)
+              .json({ message: 'No user found with that ID :(' })
+          : res.json(user)
       )
       .catch((err) => res.status(500).json(err));
   },
