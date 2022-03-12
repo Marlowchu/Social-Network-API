@@ -8,7 +8,8 @@
 
   This program recieves fetches from a client (postman) and performs RESTful CRUD operations to information in a database(MongoDB).
 
-  link to video (https://note-taker-marlow.herokuapp.com/)
+  link to user routes video (https://drive.google.com/file/d/1ZycW2ZysEc06R7lVyLLJrgTOky2-UlKP/view)
+  link to thought routes video (https://drive.google.com/file/d/12dOy0slbkHmuQdkEoPDMjqeYCj90XFsJ/view)
 
   ## Table of Contents
 

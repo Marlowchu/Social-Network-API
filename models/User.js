@@ -1,13 +1,8 @@
 const { Schema, model } = require('mongoose');
-// const userSchema = require('./Assignment');
 
 // Schema to create User model
 const userSchema = new Schema(
   {
-    // userId: {
-    //   type: Schema.Types.ObjectId,
-    //   default: () => new Types.ObjectId(),
-    // },
     username: {
       type: String,
       unique: true,
@@ -36,7 +31,6 @@ const userSchema = new Schema(
   },
   {
     toJSON: {
-      // getters: true,
       virtuals: true,
     },
   }
